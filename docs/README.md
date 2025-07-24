@@ -12,7 +12,7 @@ An interactive web-based visualization of the Fusion 360 API structure, allowing
 
 - **Interactive SVG Map**: Visual representation of the Fusion 360 API structure
 - **Clickable Elements**: Click on any API element to open its documentation in a new tab
-- **Search Functionality**: Search for specific API elements with real-time highlighting
+- **Search Functionality**: Search for specific API elements with real-time highlighting (Work-in-Progress)
 - **Zoom Controls**: Zoom in/out for better viewing of the diagram
 - **Responsive Design**: Works on desktop and mobile devices
 - **Keyboard Shortcuts**: Use Ctrl/Cmd + +/- for zoom, Ctrl/Cmd + 0 to reset
