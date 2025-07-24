@@ -10,13 +10,13 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://your-domain.com/">
+    <meta property="og:url" content="https://fusion360-api-cheatsheet.github.io/">
     <meta property="og:title" content="Fusion 360 API Interactive Cheat Sheet">
     <meta property="og:description" content="Interactive Fusion 360 API cheat sheet with hover tooltips and direct links to documentation">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://your-domain.com/">
+    <meta property="twitter:url" content="https://fusion360-api-cheatsheet.github.io/">
     <meta property="twitter:title" content="Fusion 360 API Interactive Cheat Sheet">
     <meta property="twitter:description" content="Interactive Fusion 360 API cheat sheet with hover tooltips and direct links to documentation">
     
@@ -806,11 +806,14 @@
 
     <div class="stats" id="stats">
       Loading statistics...
-      <!-- ClustrMaps Widget -->
-      <div style="text-align: center; padding: 20px; background: #f8f9fa; border-top: 1px solid #e9ecef; margin-top: 15px;">
+    </div>
+    
+    <!-- ClustrMaps Extension -->
+    <div class="clustrmaps-extension" id="clustrmapsExtension" style="display: none;">
+      <div style="text-align: center; padding: 20px; background: #f8f9fa; border-top: 1px solid #e9ecef; position: relative; z-index: 1000;">
         <p style="margin-bottom: 10px; color: #6c757d; font-size: 14px;">🌍 Global Visitors</p>
         <a href="https://clustrmaps.com/site/1c7ak" title="ClustrMaps">
-          <img src="//www.clustrmaps.com/map_v2.png?d=V8kBZP8P4V3gWgilr_Hmiwrx2x4mr_Vf9YB8rfncYwc&cl=ffffff" alt="Visitor Map" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onerror="this.style.display='none'; console.log('ClustrMaps image failed to load');" />
+          <img src="https://clustrmaps.com/map_v2.png?d=V8kBZP8P4V3gWgilr_Hmiwrx2x4mr_Vf9YB8rfncYwc&cl=ffffff" alt="Visitor Map" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onerror="this.style.display='none'; console.log('ClustrMaps image failed to load');" />
         </a>
       </div>
     </div>
@@ -1421,8 +1424,11 @@
           document.getElementById('svgContainer').innerHTML = '';
           document.getElementById('svgContainer').appendChild(svg);
           
-          document.getElementById('stats').innerHTML = 
-            `<span class="stats-clickable" onclick="toggleStats()">Loaded ${totalElements} API elements • ${loadedElements} interactive dots created</span>`;
+                  document.getElementById('stats').innerHTML = 
+          `<span class="stats-clickable" onclick="toggleStats()">Loaded ${totalElements} API elements • ${loadedElements} interactive dots created</span>`;
+        
+        // Show ClustrMaps extension after stats are loaded
+        document.getElementById('clustrmapsExtension').style.display = 'block';
         }
       } catch (error) {
         console.error('Error loading SVG:', error);
