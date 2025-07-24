@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fusion 360 API Interactive Cheat Sheet</title>
+    <meta name="description" content="Interactive Fusion 360 API cheat sheet with hover tooltips and direct links to documentation">
+    <meta name="keywords" content="Fusion 360, API, cheat sheet, interactive, documentation, Autodesk">
+    <meta name="author" content="Fusion 360 API Developer">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-domain.com/">
+    <meta property="og:title" content="Fusion 360 API Interactive Cheat Sheet">
+    <meta property="og:description" content="Interactive Fusion 360 API cheat sheet with hover tooltips and direct links to documentation">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://your-domain.com/">
+    <meta property="twitter:title" content="Fusion 360 API Interactive Cheat Sheet">
+    <meta property="twitter:description" content="Interactive Fusion 360 API cheat sheet with hover tooltips and direct links to documentation">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .controls {
+      background: #f8f9fa;
+      padding: 20px;
+      border-bottom: 1px solid #e9ecef;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 300px;
+      padding: 12px 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .zoom-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5a6fd8;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #5a6268;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    .btn-outline:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    .svg-container {
+      position: relative;
+      overflow: auto;
+      background: #f8f9fa;
+      min-height: 600px;
+    }
+
+    .svg-container svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .svg-container svg text {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .svg-container svg text:hover {
+      fill: #667eea !important;
+      font-weight: bold;
+      text-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .svg-container svg text.clickable {
+      cursor: pointer;
+    }
+
+    .svg-container svg text.clickable:hover {
+      fill: #667eea !important;
+      font-weight: bold;
+    }
+
+    .svg-container svg g.clickable {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .svg-container svg g.clickable:hover {
+      opacity: 0.8;
+      filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.5));
+    }
+
+    .svg-container svg g.clickable use {
+      transition: all 0.3s ease;
+    }
+
+    .svg-container svg g.clickable:hover use {
+      fill: #667eea !important;
+    }
+
+    /* Hover tooltip styles */
+    .hover-tooltip {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.95);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      max-width: 450px;
+      z-index: 10000;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      pointer-events: auto;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      cursor: move;
+      user-select: none;
+    }
+    
+    .hover-tooltip.pinned {
+      cursor: move;
+      display: block;
+      overflow-y: auto;
+      max-height: 600px;
+    }
+
+    .hover-tooltip.show {
+      opacity: 1;
+    }
+
+    .hover-tooltip h3 {
+      margin: 0 0 10px 0;
+      color: #667eea;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .hover-tooltip .class-info {
+      margin-bottom: 10px;
+    }
+
+    .hover-tooltip .inheritance {
+      color: #888;
+      font-style: italic;
+      margin-bottom: 8px;
+    }
+
+    .hover-tooltip .docstring {
+      color: #ccc;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+
+    .hover-tooltip .methods, .hover-tooltip .properties {
+      margin-bottom: 8px;
+    }
+
+    .hover-tooltip .methods h4, .hover-tooltip .properties h4 {
+      color: #4CAF50;
+      margin: 0 0 5px 0;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .hover-tooltip .method-list, .hover-tooltip .property-list {
+      color: #ddd;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .hover-tooltip .method-list span, .hover-tooltip .property-list span {
+      display: inline-block;
+      margin-right: 8px;
+      margin-bottom: 2px;
+      padding: 1px 4px;
+      background: rgba(102, 126, 234, 0.2);
+      border-radius: 3px;
+    }
+
+    .hover-tooltip .stats {
+      color: #888;
+      font-size: 11px;
+      margin-top: 8px;
+      border-top: 1px solid #444;
+      padding-top: 8px;
+    }
+    
+    .tooltip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .tooltip-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.2s;
+    }
+    
+    .tooltip-close:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .hover-tooltip .documentation, .hover-tooltip .sample-usage {
+      margin-bottom: 8px;
+    }
+    
+    .hover-tooltip .documentation h4, .hover-tooltip .sample-usage h4 {
+      color: #4CAF50;
+      margin: 0 0 5px 0;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .tooltip-link {
+      color: #667eea;
+      text-decoration: none;
+      display: inline-block;
+      padding: 5px 10px;
+      background: rgba(102, 126, 234, 0.1);
+      border-radius: 4px;
+      transition: all 0.2s;
+      font-size: 11px;
+    }
+    
+    .tooltip-link:hover {
+      background: rgba(102, 126, 234, 0.2);
+      color: #8b9df0;
+    }
+    
+    .tooltip-code {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      display: block;
+      margin-top: 5px;
+      border-left: 3px solid #667eea;
+      color: #ddd;
+    }
+
+    .info-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      padding: 20px;
+      max-width: 300px;
+      z-index: 1000;
+      display: none;
+    }
+    
+    .info-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .info-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #6c757d;
+      cursor: pointer;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.2s ease;
+    }
+    
+    .info-close:hover {
+      background-color: #f8f9fa;
+      color: #495057;
+    }
+
+    .info-panel.show {
+      display: block;
+    }
+    
+    .stats-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      padding: 20px;
+      max-width: 400px;
+      max-height: 80vh;
+      z-index: 1000;
+      display: none;
+      overflow-y: auto;
+    }
+    
+    .stats-panel.show {
+      display: block;
+    }
+    
+    .stats-summary {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 6px;
+    }
+    
+    .stats-summary p {
+      margin: 8px 0;
+      font-size: 14px;
+    }
+    
+    .stats-tabs {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 15px;
+    }
+    
+    .tab-button {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #dee2e6;
+      background: #f8f9fa;
+      color: #6c757d;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+    
+    .tab-button.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    
+    .tab-button:hover:not(.active) {
+      background: #e9ecef;
+    }
+    
+    .tab-pane {
+      display: none;
+    }
+    
+    .tab-pane.active {
+      display: block;
+    }
+    
+    .element-list {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      padding: 10px;
+    }
+    
+    .element-item {
+      padding: 6px 8px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 13px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .element-item:last-child {
+      border-bottom: none;
+    }
+    
+    .element-item.missing {
+      color: #dc3545;
+    }
+    
+    .element-item.loaded {
+      color: #28a745;
+    }
+    
+    .stats-clickable {
+      cursor: pointer;
+      color: #667eea;
+      text-decoration: underline;
+    }
+    
+    .stats-clickable:hover {
+      color: #5a6fd8;
+    }
+    
+    .element-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      padding: 4px 6px;
+      border-radius: 3px;
+      transition: all 0.2s ease;
+    }
+    
+    .element-link:hover {
+      text-decoration: none;
+      background-color: #f8f9fa;
+    }
+    
+    .doc-link {
+      color: #dc3545;
+    }
+    
+    .doc-link:hover {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    .svg-link {
+      color: #28a745;
+    }
+    
+    .svg-link:hover {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .info-panel h3 {
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    .info-panel p {
+      margin-bottom: 15px;
+      color: #6c757d;
+      font-size: 14px;
+    }
+
+    .info-panel a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .info-panel a:hover {
+      text-decoration: underline;
+    }
+
+    .stats {
+      background: #f8f9fa;
+      padding: 15px 20px;
+      border-top: 1px solid #e9ecef;
+      font-size: 14px;
+      color: #6c757d;
+      text-align: center;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 400px;
+      font-size: 18px;
+      color: #6c757d;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin-right: 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* API Dot Styles */
+    .api-dot {
+      fill: #667eea;
+      opacity: 0.6;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      pointer-events: all;
+    }
+    
+    .api-dot:hover,
+    .api-dot.hover {
+      fill: #ff6b6b;
+      opacity: 1;
+      r: 5;
+      filter: drop-shadow(0 0 4px rgba(255, 107, 107, 0.6));
+    }
+    
+    .api-dot.pinned {
+      fill: #ff6b6b;
+      opacity: 1;
+      filter: drop-shadow(0 0 12px rgba(255, 107, 107, 1));
+      stroke: #ffffff;
+      stroke-width: 2;
+    }
+    
+    .tooltip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .tooltip-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .source-link {
+      font-size: 0.9em;
+      padding: 4px 8px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #495057;
+    }
+    
+    .source-link:hover {
+      background: #e9ecef;
+      text-decoration: none;
+    }
+    
+    .file-info {
+      font-size: 0.85em;
+      color: #6c757d;
+      margin-bottom: 8px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .file-path {
+      color: #2c5aa0;
+      font-weight: 500;
+    }
+    
+    .method-item, .property-item {
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+      margin-bottom: 8px;
+    }
+    
+    .method-item:last-child, .property-item:last-child {
+      border-bottom: none;
+    }
+    
+    .method-header, .property-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 3px;
+      transition: background-color 0.2s ease;
+    }
+    
+    .method-header:hover, .property-header:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .method-name, .property-name {
+      font-weight: 500;
+      color: #495057;
+      flex-grow: 1;
+    }
+    
+    .toggle-icon {
+      font-size: 10px;
+      color: #6c757d;
+      margin-right: 8px;
+      transition: transform 0.3s ease;
+    }
+    
+    .method-item.expanded .toggle-icon,
+    .property-item.expanded .toggle-icon {
+      transform: rotate(90deg);
+    }
+    
+    .method-details, .property-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+      opacity: 0;
+      padding-left: 16px;
+    }
+    
+    .method-item.expanded .method-details,
+    .property-item.expanded .property-details {
+      max-height: 500px;
+      opacity: 1;
+      padding-top: 8px;
+      padding-bottom: 4px;
+    }
+    
+    .method-signature {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      color: #000000;
+      background: #f8f9fa;
+      padding: 6px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      word-break: break-all;
+      border-left: 3px solid #495057;
+      font-weight: bold;
+    }
+    
+    .method-doc, .property-doc {
+      font-size: 0.9em;
+      color: #666;
+      margin: 4px 0;
+      line-height: 1.4;
+      font-style: italic;
+    }
+    
+    .method-line, .property-line {
+      font-size: 0.8em;
+      color: #999;
+      margin-top: 2px;
+    }
+    
+    .method-source-link, .property-source-link {
+      font-size: 0.9em;
+      color: #6c757d;
+      text-decoration: none;
+      padding: 2px 4px;
+      border-radius: 3px;
+      background: #f8f9fa;
+    }
+    
+    .method-source-link:hover, .property-source-link:hover {
+      background: #e9ecef;
+      color: #495057;
+      text-decoration: none;
+    }
+
+    .method-list, .property-list {
+      max-height: 120px;
+      overflow-y: auto;
+      margin-top: 5px;
+      padding-right: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .search-box {
+        min-width: auto;
+      }
+      
+      .info-panel {
+        position: static;
+        margin: 20px;
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Fusion 360 API Interactive Cheat Sheet</h1>
+      <p>Click on any API element in the diagram below to access its documentation</p>
+    </div>
+
+    <div class="controls">
+      <input type="text" class="search-box" placeholder="Search for API elements..." id="searchBox">
+      <div class="zoom-controls">
+        <button class="btn btn-outline" onclick="zoomIn()">Zoom In</button>
+        <button class="btn btn-outline" onclick="zoomOut()">Zoom Out</button>
+        <button class="btn btn-outline" onclick="resetZoom()">Reset</button>
+        <button class="btn btn-secondary" onclick="toggleInfo()">Info</button>
+      </div>
+    </div>
+
+    <div class="svg-container" id="svgContainer">
+      <div class="loading">
+        <div class="spinner"></div>
+        Loading Fusion 360 API Cheat Sheet...
+      </div>
+    </div>
+
+    <div class="stats" id="stats">
+      Loading statistics...
+    </div>
+  </div>
+
+  <div class="info-panel" id="infoPanel">
+    <div class="info-header">
+      <h3>Interactive API Map</h3>
+      <button class="info-close" onclick="toggleInfo()">×</button>
+    </div>
+    <p>This interactive diagram shows the Fusion 360 API structure. Click on any element to view its documentation.</p>
+    <p><strong>Features:</strong></p>
+    <ul style="margin-left: 20px; margin-bottom: 15px;">
+      <li>Click any API element to open documentation</li>
+      <li>Hover over elements to see class details</li>
+      <li>Search for specific elements</li>
+      <li>Zoom in/out for better viewing</li>
+      <li>Hover over elements for visual feedback</li>
+    </ul>
+    <p><strong>Total API Elements:</strong> <span id="totalElements">Loading...</span></p>
+    <a href="https://help.autodesk.com/view/fusion360/ENU/" target="_blank">View Full Documentation</a>
+  </div>
+
+  <div class="stats-panel" id="statsPanel">
+    <div class="info-header">
+      <h3>API Elements Analysis</h3>
+      <button class="info-close" onclick="toggleStats()">×</button>
+    </div>
+    <div class="stats-content">
+      <div class="stats-summary">
+        <p><strong>Total API Elements:</strong> <span id="statsTotalElements">0</span></p>
+        <p><strong>Interactive Dots Created:</strong> <span id="statsLoadedElements">0</span></p>
+        <p><strong>Missing Elements:</strong> <span id="statsMissingElements">0</span></p>
+      </div>
+      <div class="stats-tabs">
+        <button class="tab-button active" onclick="switchTab('missing')">Missing Elements</button>
+        <button class="tab-button" onclick="switchTab('loaded')">Loaded Elements</button>
+      </div>
+      <div class="tab-content">
+        <div id="missingTab" class="tab-pane active">
+          <div class="element-list" id="missingElementsList"></div>
+        </div>
+        <div id="loadedTab" class="tab-pane">
+          <div class="element-list" id="loadedElementsList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let currentZoom = 1;
+    let apiLinks = {};
+    let pdfMapping = {}; // PDF-based text mapping
+    let apiClassInfo = {}; // API class information for hover tooltips
+    let totalElements = 0;
+    let loadedElements = 0;
+
+    // Load the API links from the log file
+    async function loadApiLinks() {
+      try {
+        const response = await fetch('data/links.log?v=' + Date.now());
+        const text = await response.text();
+        
+        // Parse line by line
+        const lines = text.split('\n');
+        for (const line of lines) {
+          if (line.includes(' -> ')) {
+            const parts = line.split(' -> ');
+            if (parts.length >= 2) {
+              const name = parts[0].trim();
+              const url = parts[1].trim();
+              if (name && url && !name.startsWith('http')) {
+                apiLinks[name] = url;
+              }
+            }
+          }
+        }
+        
+        totalElements = Object.keys(apiLinks).length;
+        document.getElementById('totalElements').textContent = totalElements;
+        document.getElementById('stats').textContent = `Loaded ${totalElements} API elements`;
+        
+
+      } catch (error) {
+        console.error('Error loading API links:', error);
+        document.getElementById('stats').textContent = 'Error loading API links';
+      }
+    }
+
+    // Load the PDF-based text mapping
+    async function loadPdfMapping() {
+      try {
+        const response = await fetch('data/pdf_text_mapping.json?v=' + Date.now());
+        const data = await response.json();
+        
+        // Create a mapping of text to API names with positions
+        data.api_text_blocks.forEach(block => {
+          pdfMapping[block.text] = {
+            api_name: block.api_name,
+            x: block.x,
+            y: block.y,
+            bbox: block.bbox
+          };
+        });
+        
+
+      } catch (error) {
+        console.error('Error loading PDF mapping:', error);
+      }
+    }
+
+    // Load API class information for hover tooltips
+    async function loadApiClassInfo() {
+      try {
+        const response = await fetch('data/api_class_info.json?v=' + Date.now());
+        const data = await response.json();
+        apiClassInfo = data;
+        
+
+      } catch (error) {
+        console.error('Error loading API class info:', error);
+
+        // Create fallback data
+        apiClassInfo = {
+          "Application": {
+            "name": "Application",
+            "inheritance": "Base",
+            "methods": ["activeDocument", "documents", "userInterface", "version"],
+            "properties": ["activeDocument", "documents", "userInterface"],
+            "docstring": "The Application object is the root object for accessing all other objects in the Fusion 360 API.",
+            "method_count": 4,
+            "property_count": 3
+          },
+          "Design": {
+            "name": "Design",
+            "inheritance": "Base",
+            "methods": ["rootComponent", "activeComponent", "designType"],
+            "properties": ["rootComponent", "activeComponent", "designType"],
+            "docstring": "Represents a design document containing components, features, and other design elements.",
+            "method_count": 3,
+            "property_count": 3
+          }
+        };
+      }
+    }
+
+
+    
+    // Robust OOP instance management for TooltipMenu
+    class TooltipMenu {
+      constructor(dot, apiName, mapping, isPinned = false) {
+        this.dot = dot;
+        this.apiName = apiName;
+        this.mapping = mapping;
+        this.isPinned = isPinned;
+        this.isDragging = false;
+        this.xOffset = 0;
+        this.yOffset = 0;
+        this.currentX = 0;
+        this.currentY = 0;
+        this.initialX = 0;
+        this.initialY = 0;
+        this.hoverTimeout = null;
+        this.tooltipElement = this.createTooltipElement();
+        this.populateTooltipData();
+        this.initEvents();
+      }
+
+      createTooltipElement() {
+        const tooltip = document.createElement('div');
+        tooltip.classList.add('hover-tooltip');
+        if (this.isPinned) {
+          tooltip.classList.add('pinned');
+        }
+        tooltip.innerHTML = `
+          <div class="tooltip-header">
+            <h3 id="tooltipTitle">${this.apiName}</h3>
+            <div class="tooltip-actions">
+              <a id="tooltipSourceLink" href="#" target="_blank" class="tooltip-link source-link">
+                📄 View Source
+              </a>
+              <button class="tooltip-close">×</button>
+            </div>
+          </div>
+          <div class="class-info">
+            <div class="inheritance" id="tooltipInheritance">Loading...</div>
+            <div class="file-info" id="tooltipFileInfo">Loading...</div>
+            <div class="docstring" id="tooltipDocstring">Loading...</div>
+          </div>
+          <div class="methods">
+            <h4>Methods (<span id="tooltipMethodCount">0</span>)</h4>
+            <div class="method-list" id="tooltipMethods"></div>
+          </div>
+          <div class="properties">
+            <h4>Properties (<span id="tooltipPropertyCount">0</span>)</h4>
+            <div class="property-list" id="tooltipProperties"></div>
+          </div>
+          <div class="documentation">
+            <h4>Documentation</h4>
+            <a id="tooltipDocLink" href="#" target="_blank" class="tooltip-link">
+              📖 View Official Documentation
+            </a>
+          </div>
+          <div class="sample-usage">
+            <h4>Sample Usage</h4>
+            <code id="tooltipSampleCode" class="tooltip-code">
+              import adsk.core<br>
+              app = adsk.core.Application.get()
+            </code>
+          </div>
+          <div class="stats">
+            <div>Methods: <span id="tooltipMethodStats">0</span> | Properties: <span id="tooltipPropertyStats">0</span></div>
+          </div>
+          <div class="resize-handle"></div>
+        `;
+        document.body.appendChild(tooltip);
+        return tooltip;
+      }
+
+      initEvents() {
+        this.tooltipElement.querySelector('.tooltip-close').addEventListener('click', () => this.closeTooltip());
+        this.tooltipElement.addEventListener('mousedown', (event) => this.dragStart(event));
+        document.addEventListener('mousemove', (event) => this.drag(event));
+        document.addEventListener('mouseup', () => this.dragEnd());
+        this.dot.addEventListener('mouseenter', () => {
+          if (!this.isPinned) {
+            this.dot.setAttribute('r', '3.3'); // Increase size by 10%
+            this.showTooltip();
+          }
+        });
+        this.dot.addEventListener('mouseleave', () => {
+          if (!this.isPinned) {
+            this.dot.setAttribute('r', '3'); // Reset to normal size
+            this.hoverTimeout = setTimeout(() => this.removeTooltip(), 300); // Remove tooltip completely
+          }
+        });
+        this.initResize();
+      }
+
+      initResize() {
+        const resizeHandle = this.tooltipElement.querySelector('.resize-handle');
+        let isResizing = false;
+        let startX, startY, startWidth, startHeight;
+
+        resizeHandle.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          isResizing = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          startWidth = parseInt(document.defaultView.getComputedStyle(this.tooltipElement).width, 10);
+          startHeight = parseInt(document.defaultView.getComputedStyle(this.tooltipElement).height, 10);
+          document.documentElement.addEventListener('mousemove', doDrag, false);
+          document.documentElement.addEventListener('mouseup', stopDrag, false);
+        });
+
+        const doDrag = (e) => {
+          if (isResizing) {
+            this.tooltipElement.style.width = (startWidth + e.clientX - startX) + 'px';
+            this.tooltipElement.style.height = (startHeight + e.clientY - startY) + 'px';
+          }
+        };
+
+        const stopDrag = () => {
+          isResizing = false;
+          document.documentElement.removeEventListener('mousemove', doDrag, false);
+          document.documentElement.removeEventListener('mouseup', stopDrag, false);
+        };
+      }
+
+      /* togglePin(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        clearTimeout(this.hoverTimeout); // Clear hover timeout when pinning
+        // Remove any existing hover tooltip
+        document.querySelectorAll('.hover-tooltip:not(.pinned)').forEach(tooltip => tooltip.remove());
+        if (this.isPinned) {
+          console.log('Unpinning tooltip menu');
+          this.unpin();
+        } else {
+          console.log('Pinning tooltip menu');
+          this.pin();
+        }
+      } */
+
+      pin() {
+        this.isPinned = true;
+        this.dot.classList.add('pinned');
+        this.dot.setAttribute('r', '9'); // Pinned size
+        this.tooltipElement.classList.add('pinned');
+        this.showTooltip();
+        console.log(`Pinned tooltip menu for ${this.apiName}`);
+      }
+
+      unpin() {
+        this.isPinned = false;
+        this.dot.classList.remove('pinned');
+        this.dot.setAttribute('r', '3'); // Normal size
+        this.tooltipElement.classList.remove('pinned');
+        // Do NOT remove the tooltip element here
+        console.log(`Unpinned tooltip menu for ${this.apiName}`);
+      }
+
+      showTooltip() {
+        const rect = this.dot.getBoundingClientRect();
+        this.tooltipElement.style.left = `${rect.left + window.scrollX + 10}px`; // Adjust distance
+        this.tooltipElement.style.top = `${rect.top + window.scrollY + 10}px`; // Adjust distance
+        this.tooltipElement.classList.add('show');
+        console.log(`Showing tooltip menu for ${this.apiName}`);
+      }
+
+      removeTooltip() {
+        if (!this.isPinned) { // Only remove if not pinned
+          this.tooltipElement.remove();
+          console.log(`Removed tooltip menu for ${this.apiName}`);
+        }
+      }
+
+      closeTooltip() {
+        this.unpin();
+        this.tooltipElement.remove();
+        this.dot.classList.remove('pinned'); // Remove pinned class
+        this.dot.classList.remove('hover'); // Remove hover class
+        this.dot.setAttribute('r', '3'); // Reset to original size
+        console.log(`Closed tooltip menu for ${this.apiName}`);
+      }
+
+      dragStart(event) {
+        if (event.target.classList.contains('tooltip-close') || event.target.closest('.tooltip-link')) {
+          return; // Don't drag if clicking close button or links
+        }
+        event.stopPropagation();
+        this.initialX = event.clientX - this.xOffset;
+        this.initialY = event.clientY - this.yOffset;
+        if (event.target === this.tooltipElement || this.tooltipElement.contains(event.target)) {
+          this.isDragging = true;
+          this.tooltipElement.setAttribute('data-dragging', 'true');
+        }
+      }
+
+      drag(event) {
+        if (this.isDragging) {
+          event.preventDefault();
+          this.currentX = event.clientX - this.initialX;
+          this.currentY = event.clientY - this.initialY;
+          this.xOffset = this.currentX;
+          this.yOffset = this.currentY;
+          this.setTranslate(this.currentX, this.currentY);
+        }
+      }
+
+      dragEnd() {
+        this.initialX = this.currentX;
+        this.initialY = this.currentY;
+        this.isDragging = false;
+        this.tooltipElement.setAttribute('data-dragging', 'false');
+      }
+
+      setTranslate(xPos, yPos) {
+        this.tooltipElement.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+      }
+
+      populateTooltipData() {
+        // Get API class information from the loaded data
+        const classInfo = apiClassInfo[this.apiName];
+        if (classInfo) {
+          // Update inheritance
+          const inheritanceElement = this.tooltipElement.querySelector('#tooltipInheritance');
+          inheritanceElement.textContent = `Inherits from: ${classInfo.inheritance || 'None'}`;
+          
+          // Update file info with line number
+          const fileInfoElement = this.tooltipElement.querySelector('#tooltipFileInfo');
+          const filePath = classInfo.file || 'N/A';
+          const lineNumber = classInfo.line || 'N/A';
+          fileInfoElement.innerHTML = `Source: <span class="file-path">${filePath}</span> (line ${lineNumber})`;
+          
+          // Update docstring
+          const docstringElement = this.tooltipElement.querySelector('#tooltipDocstring');
+          docstringElement.textContent = classInfo.docstring || 'No description available.';
+          
+          // Update methods with signatures and docstrings
+          const methodCountElement = this.tooltipElement.querySelector('#tooltipMethodCount');
+          const methodStatsElement = this.tooltipElement.querySelector('#tooltipMethodStats');
+          const methodsElement = this.tooltipElement.querySelector('#tooltipMethods');
+          
+          if (classInfo.methods && classInfo.methods.length > 0) {
+            methodCountElement.textContent = classInfo.methods.length;
+            methodStatsElement.textContent = classInfo.methods.length;
+            methodsElement.innerHTML = classInfo.methods.map(method => {
+              const methodDoc = method.docstring ? `<div class="method-doc">${method.docstring}</div>` : '';
+              const methodLine = method.line ? ` (line ${method.line})` : '';
+              return `
+                <div class="method-item">
+                  <div class="method-header" onclick="this.parentElement.classList.toggle('expanded')">
+                    <span class="method-name">• ${method.name}</span>
+                    <span class="toggle-icon">▶</span>
+                    <a href="#" class="method-source-link" data-file="${classInfo.file}" data-line="${method.line}" data-pattern="def ${method.name}" onclick="event.stopPropagation()">
+                      📄
+                    </a>
+                  </div>
+                  <div class="method-details">
+                    <div class="method-signature">${method.signature}</div>
+                    ${methodDoc}
+                    <div class="method-line">${methodLine}</div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          } else {
+            methodCountElement.textContent = '0';
+            methodStatsElement.textContent = '0';
+            methodsElement.innerHTML = '<div class="method-item">No methods available</div>';
+          }
+          
+          // Update properties with docstrings
+          const propertyCountElement = this.tooltipElement.querySelector('#tooltipPropertyCount');
+          const propertyStatsElement = this.tooltipElement.querySelector('#tooltipPropertyStats');
+          const propertiesElement = this.tooltipElement.querySelector('#tooltipProperties');
+          
+          if (classInfo.properties && classInfo.properties.length > 0) {
+            propertyCountElement.textContent = classInfo.properties.length;
+            propertyStatsElement.textContent = classInfo.properties.length;
+            propertiesElement.innerHTML = classInfo.properties.map(property => {
+              const propertyDoc = property.docstring ? `<div class="property-doc">${property.docstring}</div>` : '';
+              const propertyLine = property.line ? ` (line ${property.line})` : '';
+              return `
+                <div class="property-item">
+                  <div class="property-header" onclick="this.parentElement.classList.toggle('expanded')">
+                    <span class="property-name">• ${property.name}</span>
+                    <span class="toggle-icon">▶</span>
+                    <a href="#" class="property-source-link" data-file="${classInfo.file}" data-line="${property.line}" data-pattern="@property\\s*\\ndef ${property.name}" onclick="event.stopPropagation()">
+                      📄
+                    </a>
+                  </div>
+                  <div class="property-details">
+                    ${propertyDoc}
+                    <div class="property-line">${propertyLine}</div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          } else {
+            propertyCountElement.textContent = '0';
+            propertyStatsElement.textContent = '0';
+            propertiesElement.innerHTML = '<div class="property-item">No properties available</div>';
+          }
+          
+          // Update source link for the class
+          const sourceLinkElement = this.tooltipElement.querySelector('#tooltipSourceLink');
+          if (classInfo.file && classInfo.line) {
+            sourceLinkElement.href = `assets/${classInfo.file}#L${classInfo.line}`;
+            sourceLinkElement.onclick = (e) => {
+              e.preventDefault();
+              this.navigateToSource(classInfo.file, classInfo.line, `class ${this.apiName}`);
+            };
+          } else {
+            sourceLinkElement.href = '#';
+            sourceLinkElement.style.opacity = '0.5';
+            sourceLinkElement.textContent = '📄 Source not available';
+          }
+          
+        } else {
+          // Handle case where class info is not found
+          this.tooltipElement.querySelector('#tooltipInheritance').textContent = 'Information not available';
+          this.tooltipElement.querySelector('#tooltipFileInfo').textContent = 'Source: N/A';
+          this.tooltipElement.querySelector('#tooltipDocstring').textContent = 'No description available for this API class.';
+          this.tooltipElement.querySelector('#tooltipMethodCount').textContent = '0';
+          this.tooltipElement.querySelector('#tooltipPropertyCount').textContent = '0';
+          this.tooltipElement.querySelector('#tooltipMethods').innerHTML = '<div class="method-item">No methods available</div>';
+          this.tooltipElement.querySelector('#tooltipProperties').innerHTML = '<div class="property-item">No properties available</div>';
+        }
+        
+        // Update documentation link
+        const docLinkElement = this.tooltipElement.querySelector('#tooltipDocLink');
+        const docLink = apiLinks[this.apiName];
+        if (docLink) {
+          docLinkElement.href = docLink;
+          docLinkElement.textContent = '📖 View Official Documentation';
+        } else {
+          docLinkElement.href = '#';
+          docLinkElement.textContent = '📖 Documentation not available';
+          docLinkElement.style.opacity = '0.5';
+        }
+        
+        // Add event listeners for method and property source links
+        this.addSourceLinkListeners();
+      }
+      
+      navigateToSource(filePath, lineNumber, searchPattern) {
+        const sourceUrl = `assets/${filePath}`;
+        
+        // Try direct line navigation first
+        if (lineNumber && lineNumber !== 'N/A') {
+          const lineUrl = `${sourceUrl}#L${lineNumber}`;
+          window.open(lineUrl, '_blank');
+          return;
+        }
+        
+        // Fallback: open file and search for pattern
+        window.open(sourceUrl, '_blank');
+        // Note: The search functionality would need to be implemented in the file viewer
+        console.log(`Search pattern for ${filePath}: ${searchPattern}`);
+      }
+      
+      addSourceLinkListeners() {
+        // Add listeners for method source links
+        this.tooltipElement.querySelectorAll('.method-source-link').forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const file = link.dataset.file;
+            const line = link.dataset.line;
+            const pattern = link.dataset.pattern;
+            this.navigateToSource(file, line, pattern);
+          });
+        });
+        
+        // Add listeners for property source links
+        this.tooltipElement.querySelectorAll('.property-source-link').forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const file = link.dataset.file;
+            const line = link.dataset.line;
+            const pattern = link.dataset.pattern;
+            this.navigateToSource(file, line, pattern);
+          });
+        });
+      }
+    }
+
+    // --- Instance management ---
+
+    // Load the SVG and add interactive dots based on PDF mapping
+    async function loadSVG() {
+      try {
+        const response = await fetch('assets/path12046.svg?v=' + Date.now());
+        const svgText = await response.text();
+        
+        // Create a temporary div to parse the SVG
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = svgText;
+        const svg = tempDiv.querySelector('svg');
+        
+        if (svg) {
+          // Make the SVG responsive
+          svg.setAttribute('width', '100%');
+          svg.setAttribute('height', 'auto');
+          svg.style.maxWidth = '100%';
+          
+          let loadedElements = 0;
+          const totalElements = Object.keys(apiLinks).length;
+          
+          // Create dots for each API element found in PDF mapping
+          Object.entries(pdfMapping).forEach(([text, mapping]) => {
+            if (apiLinks[mapping.api_name]) {
+              // Add a visual dot at the PDF coordinates
+              const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+              const dotX = mapping.x-77;
+              const dotY = mapping.y-67;
+              dot.setAttribute('cx', dotX.toString());
+              dot.setAttribute('cy', dotY.toString());
+              dot.setAttribute('r', '3');
+              dot.setAttribute('class', 'api-dot');
+              dot.setAttribute('data-api-name', mapping.api_name);
+              dot.setAttribute('data-text', text);
+              
+              // --- Instance management ---
+              dot._tooltipMenu = null;
+              // Hover logic
+              dot.addEventListener('mouseenter', () => {
+                dot.classList.add('hover');
+                if (!dot._tooltipMenu) {
+                  dot._tooltipMenu = new TooltipMenu(dot, mapping.api_name, mapping, false);
+                  dot._tooltipMenu.showTooltip();
+                } else if (!dot._tooltipMenu.isPinned) {
+                  dot._tooltipMenu.showTooltip();
+                }
+              });
+              dot.addEventListener('mouseleave', () => {
+                // If the dot is pinned, do nothing on mouseleave
+                if (dot.classList.contains('pinned')) {
+                  return;
+                }
+                dot.classList.remove('hover');
+                if (dot._tooltipMenu && !dot._tooltipMenu.isPinned) {
+                  dot._tooltipMenu.removeTooltip();
+                  dot._tooltipMenu = null;
+                }
+              });
+              // Click logic
+              dot.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                if (dot._tooltipMenu) {
+                  if (!dot._tooltipMenu.isPinned) {
+                    dot._tooltipMenu.pin();
+                  } else {
+                    // This case handles unpinning when clicking a pinned dot
+                    dot._tooltipMenu.unpin();
+                    dot._tooltipMenu.closeTooltip();
+                    dot._tooltipMenu = null;
+                  }
+                } else {
+                  dot._tooltipMenu = new TooltipMenu(dot, mapping.api_name, mapping, true);
+                  dot._tooltipMenu.pin();
+                }
+              });
+              
+              // Add the dot to the SVG
+              svg.appendChild(dot);
+              loadedElements++;
+            }
+          });
+          
+          // Replace the loading content with the SVG
+          document.getElementById('svgContainer').innerHTML = '';
+          document.getElementById('svgContainer').appendChild(svg);
+          
+          document.getElementById('stats').innerHTML = 
+            `<span class="stats-clickable" onclick="toggleStats()">Loaded ${totalElements} API elements • ${loadedElements} interactive dots created</span>`;
+        }
+      } catch (error) {
+        console.error('Error loading SVG:', error);
+        document.getElementById('svgContainer').innerHTML = 
+          '<div class="loading">Error loading SVG file. Please ensure assets/path12046.svg is available.</div>';
+      }
+    }
+
+    // Search functionality
+    function setupSearch() {
+      const searchBox = document.getElementById('searchBox');
+      searchBox.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const textElements = document.querySelectorAll('svg text');
+        
+        textElements.forEach(element => {
+          const text = element.textContent.toLowerCase();
+          if (text.includes(searchTerm)) {
+            element.style.opacity = '1';
+            if (searchTerm) {
+              element.style.fill = '#667eea';
+              element.style.fontWeight = 'bold';
+            } else {
+              element.style.fill = '';
+              element.style.fontWeight = '';
+            }
+          } else {
+            element.style.opacity = searchTerm ? '0.3' : '1';
+          }
+        });
+      });
+    }
+
+    // Zoom functionality
+    function zoomIn() {
+      currentZoom = Math.min(currentZoom * 1.2, 3);
+      applyZoom();
+    }
+
+    function zoomOut() {
+      currentZoom = Math.max(currentZoom / 1.2, 0.3);
+      applyZoom();
+    }
+
+    function resetZoom() {
+      currentZoom = 1;
+      applyZoom();
+    }
+
+    function applyZoom() {
+      const svg = document.querySelector('svg');
+      if (svg) {
+        svg.style.transform = `scale(${currentZoom})`;
+        svg.style.transformOrigin = 'top left';
+      }
+    }
+
+    // Info panel toggle
+    function toggleInfo() {
+      const panel = document.getElementById('infoPanel');
+      panel.classList.toggle('show');
+    }
+    
+    // Stats panel toggle
+    function toggleStats() {
+      const panel = document.getElementById('statsPanel');
+      panel.classList.toggle('show');
+      if (panel.classList.contains('show')) {
+        populateStatsPanel();
+      }
+    }
+    
+    // Switch between tabs
+    function switchTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Update tab panes
+      document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+      document.getElementById(tabName + 'Tab').classList.add('active');
+    }
+    
+    // Populate the stats panel with data
+    function populateStatsPanel() {
+      // Get all API elements that have links
+      const allApiElements = Object.keys(apiLinks);
+      
+      // Get all elements that have dots (from pdfMapping)
+      const elementsWithDots = Object.values(pdfMapping).map(mapping => mapping.api_name);
+      
+      // Find missing elements
+      const missingElements = allApiElements.filter(element => !elementsWithDots.includes(element));
+      
+      // Update summary
+      document.getElementById('statsTotalElements').textContent = allApiElements.length;
+      document.getElementById('statsLoadedElements').textContent = elementsWithDots.length;
+      document.getElementById('statsMissingElements').textContent = missingElements.length;
+      
+      // Populate missing elements list with documentation links
+      const missingList = document.getElementById('missingElementsList');
+      missingList.innerHTML = missingElements.length > 0 
+        ? missingElements.map(element => {
+            const docLink = apiLinks[element];
+            return `<div class="element-item missing">
+              <a href="${docLink}" target="_blank" class="element-link doc-link" title="View Documentation">
+                📖 ${element}
+              </a>
+            </div>`;
+          }).join('')
+        : '<div class="element-item">No missing elements found!</div>';
+      
+      // Populate loaded elements list with SVG navigation links
+      const loadedList = document.getElementById('loadedElementsList');
+      loadedList.innerHTML = elementsWithDots.length > 0
+        ? elementsWithDots.map(element => {
+            const mapping = Object.values(pdfMapping).find(m => m.api_name === element);
+            return `<div class="element-item loaded">
+              <a href="#" onclick="navigateToElement('${element}'); return false;" class="element-link svg-link" title="Navigate to Element">
+                🔍 ${element}
+              </a>
+            </div>`;
+          }).join('')
+        : '<div class="element-item">No loaded elements found!</div>';
+    }
+    
+    // Navigate to an element on the SVG
+    function navigateToElement(elementName) {
+      console.log(`Navigating to element: ${elementName}`);
+      
+      // Find the dot for this element
+      let dot = document.querySelector(`[data-api-name="${elementName}"]`);
+      console.log(`Found dot:`, dot);
+      
+      // Fallback: try to find by text content if data-api-name doesn't work
+      if (!dot) {
+        const allDots = document.querySelectorAll('.api-dot');
+        dot = Array.from(allDots).find(d => d.getAttribute('data-text') === elementName);
+        console.log(`Found dot by fallback:`, dot);
+      }
+      
+      if (dot) {
+        // Scroll the dot into view
+        dot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Add a small delay to ensure scrolling is complete
+        setTimeout(() => {
+          // Trigger the dot's click event to open the tooltip
+          console.log(`Triggering click on dot for: ${elementName}`);
+          
+          // Create and dispatch a click event manually
+          const clickEvent = new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+          });
+          dot.dispatchEvent(clickEvent);
+          
+          // Don't close the stats panel - let user click multiple elements
+          // The panel will only close when user clicks the X button
+        }, 500);
+      } else {
+        console.error(`Dot not found for element: ${elementName}`);
+        // Don't close the stats panel on error - let user try other elements
+      }
+    }
+
+
+
+    // Initialize the application
+    async function init() {
+      await loadApiLinks();
+      await loadPdfMapping();
+      await loadApiClassInfo();
+      await loadSVG();
+      setupSearch();
+      
+      // Add keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+          switch(e.key) {
+            case '=':
+            case '+':
+              e.preventDefault();
+              zoomIn();
+              break;
+            case '-':
+              e.preventDefault();
+              zoomOut();
+              break;
+            case '0':
+              e.preventDefault();
+              resetZoom();
+              break;
+          }
+        }
+      });
+    }
+
+    // Start the application
+    init();
+  </script>
+</body>
+</html>
