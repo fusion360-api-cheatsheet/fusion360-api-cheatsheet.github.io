@@ -781,6 +781,9 @@
   <div class="container">
     <div class="header">
       <h1>Fusion 360 API Interactive Cheat Sheet</h1>
+      <p style="color: #ff6b6b; font-weight: 500; margin-bottom: 15px; padding: 8px 16px; background: rgba(255, 107, 107, 0.1); border-radius: 6px; border: 1px solid rgba(255, 107, 107, 0.3);">
+        ⚠️ This is NOT an official Autodesk page. Educational resource only to support developers.
+      </p>
       <p>Click on any API element in the diagram below to access its documentation</p>
     </div>
 
@@ -804,6 +807,11 @@
     <div class="stats" id="stats">
       Loading statistics...
     </div>
+    
+    <!-- ClustrMaps Widget -->
+    <div style="text-align: center; padding: 20px; background: #f8f9fa; border-top: 1px solid #e9ecef;">
+      <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=V8kBZP8P4V3gWgilr_Hmiwrx2x4mr_Vf9YB8rfncYwc&cl=ffffff&w=a"></script>
+    </div>
   </div>
 
   <div class="info-panel" id="infoPanel">
@@ -821,7 +829,7 @@
       <li>Hover over elements for visual feedback</li>
     </ul>
     <p><strong>Total API Elements:</strong> <span id="totalElements">Loading...</span></p>
-    <a href="https://help.autodesk.com/view/fusion360/ENU/" target="_blank">View Full Documentation</a>
+    <a href="work-in-progress.html" target="_blank">View Full Documentation</a>
   </div>
 
   <div class="stats-panel" id="statsPanel">
@@ -1001,7 +1009,7 @@
           </div>
           <div class="documentation">
             <h4>Documentation</h4>
-            <a id="tooltipDocLink" href="#" target="_blank" class="tooltip-link">
+            <a id="tooltipDocLink" href="work-in-progress.html" target="_blank" class="tooltip-link">
               📖 View Official Documentation
             </a>
           </div>
@@ -1275,15 +1283,8 @@
         
         // Update documentation link
         const docLinkElement = this.tooltipElement.querySelector('#tooltipDocLink');
-        const docLink = apiLinks[this.apiName];
-        if (docLink) {
-          docLinkElement.href = docLink;
-          docLinkElement.textContent = '📖 View Official Documentation';
-        } else {
-          docLinkElement.href = '#';
-          docLinkElement.textContent = '📖 Documentation not available';
-          docLinkElement.style.opacity = '0.5';
-        }
+        docLinkElement.href = 'work-in-progress.html';
+        docLinkElement.textContent = '📖 View Official Documentation';
         
         // Add event listeners for method and property source links
         this.addSourceLinkListeners();
