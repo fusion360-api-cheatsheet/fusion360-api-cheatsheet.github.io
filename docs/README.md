@@ -1,4 +1,10 @@
-# Fusion 360 API Interactive Cheat Sheet
+
+<div align="center" style="font-size: 22pt;"> 
+  <h1 style="text-align: center;">Fusion 360 API Interactive Cheat Sheet</h1>
+<p align="center">
+  <img src="assets/chrome_test.gif" alt="Demo of Fusion 360 API Interactive Cheat Sheet" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
+</p>
+</div>
 
 An interactive web-based visualization of the Fusion 360 API structure, allowing users to click on any API element to access its documentation.
 
