@@ -191,11 +191,11 @@
     /* Hover tooltip styles */
     .hover-tooltip {
       position: absolute;
-      background: rgba(0, 0, 0, 0.95);
-      color: white;
+      background: rgb(238, 239, 240);
+      color: #2c3e50;
       padding: 15px;
       border-radius: 8px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       max-width: 450px;
       z-index: 10000;
       font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
@@ -206,6 +206,7 @@
       transition: opacity 0.3s ease;
       cursor: move;
       user-select: none;
+      border: 1px solid #e9ecef;
     }
     
     .hover-tooltip.pinned {
@@ -221,7 +222,7 @@
 
     .hover-tooltip h3 {
       margin: 0 0 10px 0;
-      color: #667eea;
+      color: #2c3e50;
       font-size: 14px;
       font-weight: bold;
     }
@@ -231,13 +232,13 @@
     }
 
     .hover-tooltip .inheritance {
-      color: #888;
+      color: #6c757d;
       font-style: italic;
       margin-bottom: 8px;
     }
 
     .hover-tooltip .docstring {
-      color: #ccc;
+      color: #495057;
       margin-bottom: 10px;
       font-style: italic;
     }
@@ -247,14 +248,14 @@
     }
 
     .hover-tooltip .methods h4, .hover-tooltip .properties h4 {
-      color: #4CAF50;
+      color: #28a745;
       margin: 0 0 5px 0;
       font-size: 12px;
       font-weight: bold;
     }
 
     .hover-tooltip .method-list, .hover-tooltip .property-list {
-      color: #ddd;
+      color: #495057;
       font-size: 11px;
       line-height: 1.3;
     }
@@ -264,15 +265,16 @@
       margin-right: 8px;
       margin-bottom: 2px;
       padding: 1px 4px;
-      background: rgba(102, 126, 234, 0.2);
+      background: rgba(102, 126, 234, 0.1);
       border-radius: 3px;
+      color: #495057;
     }
 
     .hover-tooltip .stats {
-      color: #888;
+      color: #6c757d;
       font-size: 11px;
       margin-top: 8px;
-      border-top: 1px solid #444;
+      border-top: 1px solid #e9ecef;
       padding-top: 8px;
     }
     
@@ -282,13 +284,13 @@
       align-items: center;
       margin-bottom: 10px;
       padding-bottom: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      border-bottom: 1px solid #e9ecef;
     }
     
     .tooltip-close {
       background: none;
       border: none;
-      color: white;
+      color: #6c757d;
       font-size: 18px;
       cursor: pointer;
       padding: 0;
@@ -302,7 +304,8 @@
     }
     
     .tooltip-close:hover {
-      background-color: rgba(255, 255, 255, 0.2);
+      background-color: #f8f9fa;
+      color: #495057;
     }
     
     .hover-tooltip .documentation, .hover-tooltip .sample-usage {
@@ -310,7 +313,7 @@
     }
     
     .hover-tooltip .documentation h4, .hover-tooltip .sample-usage h4 {
-      color: #4CAF50;
+      color: #28a745;
       margin: 0 0 5px 0;
       font-size: 12px;
       font-weight: bold;
@@ -329,11 +332,11 @@
     
     .tooltip-link:hover {
       background: rgba(102, 126, 234, 0.2);
-      color: #8b9df0;
+      color: #5a6fd8;
     }
     
     .tooltip-code {
-      background: rgba(255, 255, 255, 0.1);
+      background: #f8f9fa;
       padding: 8px;
       border-radius: 4px;
       font-family: 'Courier New', monospace;
@@ -341,7 +344,7 @@
       display: block;
       margin-top: 5px;
       border-left: 3px solid #667eea;
-      color: #ddd;
+      color: #495057;
     }
 
     .info-panel {
@@ -601,7 +604,7 @@
     .api-dot.pinned {
       fill: #ff6b6b;
       opacity: 1;
-      filter: drop-shadow(0 0 12px rgba(255, 107, 107, 1));
+      filter: drop-shadow(0 0 8px rgba(255, 107, 107, 1));
       stroke: #ffffff;
       stroke-width: 2;
     }
@@ -649,19 +652,14 @@
     
     .method-item, .property-item {
       padding: 8px 0;
-      border-bottom: 1px solid #f0f0f0;
-      margin-bottom: 8px;
-    }
-    
-    .method-item:last-child, .property-item:last-child {
-      border-bottom: none;
+      margin-bottom: 2px;
     }
     
     .method-header, .property-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
       cursor: pointer;
       padding: 4px 6px;
       border-radius: 3px;
