@@ -89,6 +89,91 @@
       border-color: #667eea;
     }
 
+    /* Autocomplete dropdown styles */
+    .search-container {
+      position: relative;
+      flex: 1;
+      min-width: 300px;
+      width: 100%;
+    }
+
+    .search-box {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      width: 100%;
+      background: white;
+      border: 2px solid #667eea;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: none;
+      box-sizing: border-box;
+    }
+
+    .autocomplete-dropdown.show {
+      display: block;
+    }
+
+    .autocomplete-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background-color 0.2s ease;
+      font-size: 14px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    }
+
+    .autocomplete-item:last-child {
+      border-bottom: none;
+    }
+
+    .autocomplete-item:hover {
+      background-color: #f8f9fa;
+    }
+
+    .autocomplete-item.selected {
+      background-color: #667eea;
+      color: white;
+    }
+
+    .autocomplete-item .api-name {
+      font-weight: 500;
+      color: #2c3e50;
+    }
+
+    .autocomplete-item:hover .api-name,
+    .autocomplete-item.selected .api-name {
+      color: inherit;
+    }
+
+    .autocomplete-item .api-type {
+      font-size: 12px;
+      color: #6c757d;
+      margin-left: 8px;
+    }
+
+    .autocomplete-item:hover .api-type,
+    .autocomplete-item.selected .api-type {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .no-results {
+      padding: 12px 16px;
+      color: #6c757d;
+      font-style: italic;
+      text-align: center;
+    }
+
     .zoom-controls {
       display: flex;
       gap: 10px;
@@ -786,7 +871,10 @@
     </div>
 
     <div class="controls">
-      <input type="text" class="search-box" placeholder="Search for API elements..." id="searchBox">
+      <div class="search-container">
+        <input type="text" class="search-box" placeholder="Search for API elements..." id="searchBox">
+        <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+      </div>
       <div class="zoom-controls">
         <button class="btn btn-outline" onclick="zoomIn()">Zoom In</button>
         <button class="btn btn-outline" onclick="zoomOut()">Zoom Out</button>
@@ -1435,28 +1523,202 @@
       }
     }
 
-    // Search functionality
+    // Autocomplete search functionality
     function setupSearch() {
       const searchBox = document.getElementById('searchBox');
-      searchBox.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const textElements = document.querySelectorAll('svg text');
+      const autocompleteDropdown = document.getElementById('autocompleteDropdown');
+      let selectedIndex = -1;
+      let filteredItems = [];
+
+      // Get all available API class names that have dots on the map
+      function getApiClassNames() {
+        // Get all dots that exist on the map (only SVG circle elements)
+        const dots = document.querySelectorAll('svg circle.api-dot');
+        const availableClasses = Array.from(dots).map(dot => dot.getAttribute('data-api-name')).filter(Boolean);
+        console.log('Available API classes with dots:', availableClasses);
+        return availableClasses.sort();
+      }
+
+      // Filter API classes based on search term
+      function filterApiClasses(searchTerm) {
+        if (!searchTerm.trim()) {
+          return [];
+        }
         
-        textElements.forEach(element => {
-          const text = element.textContent.toLowerCase();
-          if (text.includes(searchTerm)) {
-            element.style.opacity = '1';
-            if (searchTerm) {
-              element.style.fill = '#667eea';
-              element.style.fontWeight = 'bold';
-            } else {
-              element.style.fill = '';
-              element.style.fontWeight = '';
+        const searchLower = searchTerm.toLowerCase();
+        const apiClasses = getApiClassNames();
+        
+        // First, find classes that start with the search term (case-insensitive)
+        const startsWithMatches = apiClasses.filter(className => 
+          className.toLowerCase().startsWith(searchLower)
+        );
+        
+        // Then, find classes that contain the search term anywhere (case-insensitive)
+        const containsMatches = apiClasses.filter(className => 
+          className.toLowerCase().includes(searchLower) && 
+          !className.toLowerCase().startsWith(searchLower)
+        );
+        
+        // Combine and limit results, prioritizing starts-with matches
+        return [...startsWithMatches, ...containsMatches].slice(0, 10);
+      }
+
+      // Create autocomplete dropdown items
+      function createAutocompleteItems(items) {
+        if (items.length === 0) {
+          return '<div class="no-results">No API classes found</div>';
+        }
+        
+        return items.map((className, index) => {
+          const isSelected = index === selectedIndex;
+          const classInfo = apiClassInfo[className] || {};
+          const type = classInfo.inheritance || 'Class';
+          
+          return `
+            <div class="autocomplete-item ${isSelected ? 'selected' : ''}" 
+                 data-api-name="${className}" 
+                 data-index="${index}">
+              <span class="api-name">${className}</span>
+              <span class="api-type">${type}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Show autocomplete dropdown
+      function showAutocomplete(items) {
+        if (items.length === 0) {
+          hideAutocomplete();
+          return;
+        }
+        
+        autocompleteDropdown.innerHTML = createAutocompleteItems(items);
+        autocompleteDropdown.classList.add('show');
+      }
+
+      // Hide autocomplete dropdown
+      function hideAutocomplete() {
+        autocompleteDropdown.classList.remove('show');
+        selectedIndex = -1;
+      }
+
+      // Navigate to and pin the selected API class
+      function navigateToApiClass(className) {
+        console.log(`Navigating to API class: ${className}`);
+        
+        // Find the dot for this API class (only SVG circle dots, not autocomplete items)
+        let dot = document.querySelector(`svg circle.api-dot[data-api-name="${className}"]`);
+        
+        if (dot) {
+          console.log(`Found SVG dot for ${className}:`, dot);
+          console.log('Dot element type:', dot.tagName);
+          console.log('Dot classes:', dot.className);
+          console.log('Dot data-api-name:', dot.getAttribute('data-api-name'));
+          
+          // Scroll the dot into view
+          dot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // Add a small delay to ensure scrolling is complete
+          setTimeout(() => {
+            // Trigger the exact same click event as if user clicked on the dot
+            const clickEvent = new MouseEvent('click', {
+              bubbles: true,
+              cancelable: true,
+              view: window
+            });
+            dot.dispatchEvent(clickEvent);
+          }, 500);
+        } else {
+          console.error(`Dot not found for API class: ${className} - this should not happen`);
+        }
+      }
+
+      // Handle search input
+      searchBox.addEventListener('input', (e) => {
+        const searchTerm = e.target.value;
+        
+        // Check if SVG is loaded
+        const svg = document.querySelector('svg');
+        if (!svg) {
+          console.log('SVG not loaded yet, search disabled');
+          return;
+        }
+        
+        filteredItems = filterApiClasses(searchTerm);
+        selectedIndex = -1;
+        
+        if (searchTerm.trim()) {
+          showAutocomplete(filteredItems);
+        } else {
+          hideAutocomplete();
+        }
+      });
+
+      // Handle keyboard navigation
+      searchBox.addEventListener('keydown', (e) => {
+        if (!autocompleteDropdown.classList.contains('show')) {
+          return;
+        }
+
+        switch (e.key) {
+          case 'ArrowDown':
+            e.preventDefault();
+            selectedIndex = Math.min(selectedIndex + 1, filteredItems.length - 1);
+            autocompleteDropdown.innerHTML = createAutocompleteItems(filteredItems);
+            break;
+            
+          case 'ArrowUp':
+            e.preventDefault();
+            selectedIndex = Math.max(selectedIndex - 1, -1);
+            autocompleteDropdown.innerHTML = createAutocompleteItems(filteredItems);
+            break;
+            
+          case 'Enter':
+            e.preventDefault();
+            if (selectedIndex >= 0 && filteredItems[selectedIndex]) {
+              const selectedClass = filteredItems[selectedIndex];
+              searchBox.value = selectedClass;
+              hideAutocomplete();
+              navigateToApiClass(selectedClass);
+            } else if (filteredItems.length === 1) {
+              // If there's only one result, select it
+              const selectedClass = filteredItems[0];
+              searchBox.value = selectedClass;
+              hideAutocomplete();
+              navigateToApiClass(selectedClass);
             }
-          } else {
-            element.style.opacity = searchTerm ? '0.3' : '1';
-          }
-        });
+            break;
+            
+          case 'Escape':
+            hideAutocomplete();
+            searchBox.blur();
+            break;
+        }
+      });
+
+      // Handle autocomplete item clicks
+      autocompleteDropdown.addEventListener('click', (e) => {
+        const item = e.target.closest('.autocomplete-item');
+        if (item) {
+          const className = item.dataset.apiName;
+          searchBox.value = className;
+          hideAutocomplete();
+          navigateToApiClass(className);
+        }
+      });
+
+      // Hide autocomplete when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!searchBox.contains(e.target) && !autocompleteDropdown.contains(e.target)) {
+          hideAutocomplete();
+        }
+      });
+
+      // Focus handling
+      searchBox.addEventListener('focus', () => {
+        if (searchBox.value.trim() && filteredItems.length > 0) {
+          showAutocomplete(filteredItems);
+        }
       });
     }
 
