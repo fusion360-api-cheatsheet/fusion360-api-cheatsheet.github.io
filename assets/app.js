@@ -148,22 +148,30 @@ class TooltipMenu {
   }
 
   initEvents() {
-    this.tooltipElement.querySelector('.tooltip-close').addEventListener('click', () => this.closeTooltip());
-    this.tooltipElement.addEventListener('mousedown', (event) => this.dragStart(event));
-    document.addEventListener('mousemove', (event) => this.drag(event));
-    document.addEventListener('mouseup', () => this.dragEnd());
-    this.dot.addEventListener('mouseenter', () => {
+    // Store bound event handlers for proper cleanup
+    this.boundCloseTooltip = () => this.closeTooltip();
+    this.boundDragStart = (event) => this.dragStart(event);
+    this.boundDrag = (event) => this.drag(event);
+    this.boundDragEnd = () => this.dragEnd();
+    this.boundMouseEnter = () => {
       if (!this.isPinned) {
         this.dot.setAttribute('r', '3.3');
         this.showTooltip();
       }
-    });
-    this.dot.addEventListener('mouseleave', () => {
+    };
+    this.boundMouseLeave = () => {
       if (!this.isPinned) {
         this.dot.setAttribute('r', '3');
         this.hoverTimeout = setTimeout(() => this.removeTooltip(), 300);
       }
-    });
+    };
+
+    this.tooltipElement.querySelector('.tooltip-close').addEventListener('click', this.boundCloseTooltip);
+    this.tooltipElement.addEventListener('mousedown', this.boundDragStart);
+    document.addEventListener('mousemove', this.boundDrag);
+    document.addEventListener('mouseup', this.boundDragEnd);
+    this.dot.addEventListener('mouseenter', this.boundMouseEnter);
+    this.dot.addEventListener('mouseleave', this.boundMouseLeave);
     this.initResize();
   }
 
@@ -171,6 +179,22 @@ class TooltipMenu {
     const resizeHandle = this.tooltipElement.querySelector('.resize-handle');
     let isResizing = false;
     let startX, startY, startWidth, startHeight;
+    
+    // Store resize handlers for cleanup
+    this.resizeHandlers = {
+      doDrag: (e) => {
+        if (isResizing) {
+          this.tooltipElement.style.width = (startWidth + e.clientX - startX) + 'px';
+          this.tooltipElement.style.height = (startHeight + e.clientY - startY) + 'px';
+        }
+      },
+      stopDrag: () => {
+        isResizing = false;
+        document.documentElement.removeEventListener('mousemove', this.resizeHandlers.doDrag, false);
+        document.documentElement.removeEventListener('mouseup', this.resizeHandlers.stopDrag, false);
+      }
+    };
+
     resizeHandle.addEventListener('mousedown', (e) => {
       e.preventDefault();
       isResizing = true;
@@ -178,20 +202,9 @@ class TooltipMenu {
       startY = e.clientY;
       startWidth = parseInt(document.defaultView.getComputedStyle(this.tooltipElement).width, 10);
       startHeight = parseInt(document.defaultView.getComputedStyle(this.tooltipElement).height, 10);
-      document.documentElement.addEventListener('mousemove', doDrag, false);
-      document.documentElement.addEventListener('mouseup', stopDrag, false);
+      document.documentElement.addEventListener('mousemove', this.resizeHandlers.doDrag, false);
+      document.documentElement.addEventListener('mouseup', this.resizeHandlers.stopDrag, false);
     });
-    const doDrag = (e) => {
-      if (isResizing) {
-        this.tooltipElement.style.width = (startWidth + e.clientX - startX) + 'px';
-        this.tooltipElement.style.height = (startHeight + e.clientY - startY) + 'px';
-      }
-    };
-    const stopDrag = () => {
-      isResizing = false;
-      document.documentElement.removeEventListener('mousemove', doDrag, false);
-      document.documentElement.removeEventListener('mouseup', stopDrag, false);
-    };
   }
 
   pin() {
@@ -218,16 +231,58 @@ class TooltipMenu {
 
   removeTooltip() {
     if (!this.isPinned) {
+      this.cleanup();
       this.tooltipElement.remove();
     }
   }
 
   closeTooltip() {
     this.unpin();
+    this.cleanup();
     this.tooltipElement.remove();
     this.dot.classList.remove('pinned');
     this.dot.classList.remove('hover');
     this.dot.setAttribute('r', '3');
+  }
+
+  cleanup() {
+    // Clear hover timeout
+    if (this.hoverTimeout) {
+      clearTimeout(this.hoverTimeout);
+      this.hoverTimeout = null;
+    }
+
+    // Remove document-level event listeners
+    if (this.boundDrag) {
+      document.removeEventListener('mousemove', this.boundDrag);
+    }
+    if (this.boundDragEnd) {
+      document.removeEventListener('mouseup', this.boundDragEnd);
+    }
+
+    // Remove tooltip element event listeners
+    if (this.tooltipElement && this.boundCloseTooltip) {
+      this.tooltipElement.querySelector('.tooltip-close')?.removeEventListener('click', this.boundCloseTooltip);
+      this.tooltipElement.removeEventListener('mousedown', this.boundDragStart);
+    }
+
+    // Remove dot event listeners
+    if (this.dot && this.boundMouseEnter) {
+      this.dot.removeEventListener('mouseenter', this.boundMouseEnter);
+      this.dot.removeEventListener('mouseleave', this.boundMouseLeave);
+    }
+
+    // Clean up resize event listeners
+    this.cleanupResize();
+  }
+
+  cleanupResize() {
+    // Remove resize event listeners if they exist
+    if (this.resizeHandlers) {
+      document.documentElement.removeEventListener('mousemove', this.resizeHandlers.doDrag);
+      document.documentElement.removeEventListener('mouseup', this.resizeHandlers.stopDrag);
+      this.resizeHandlers = null;
+    }
   }
 
   dragStart(event) {
