@@ -19,8 +19,10 @@
     <meta property="twitter:url" content="https://fusion360-api-cheatsheet.github.io/">
     <meta property="twitter:title" content="Fusion 360 API Interactive Cheat Sheet">
     <meta property="twitter:description" content="Interactive Fusion 360 API cheat sheet with hover tooltips and direct links to documentation">
-    
+  {% seo %}
+    <link rel="shortcut icon" href="/favicon.ico">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+  <link rel="stylesheet" href="assets/styles.css?v=v1">
   <style>
     * {
       margin: 0;
@@ -870,16 +872,16 @@
       <p>Click on any API element in the diagram below to access its documentation</p>
     </div>
 
-    <div class="controls">
+    <div class="controls" role="region" aria-label="Controls">
       <div class="search-container">
-        <input type="text" class="search-box" placeholder="Search for API elements..." id="searchBox">
+        <input type="text" class="search-box" placeholder="Search for API elements..." aria-label="Search API elements" id="searchBox">
         <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
       </div>
       <div class="zoom-controls">
-        <button class="btn btn-outline" onclick="zoomIn()">Zoom In</button>
-        <button class="btn btn-outline" onclick="zoomOut()">Zoom Out</button>
-        <button class="btn btn-outline" onclick="resetZoom()">Reset</button>
-        <button class="btn btn-secondary" onclick="toggleInfo()">Info</button>
+        <button class="btn btn-outline" aria-label="Zoom In" onclick="zoomIn()">Zoom In</button>
+        <button class="btn btn-outline" aria-label="Zoom Out" onclick="zoomOut()">Zoom Out</button>
+        <button class="btn btn-outline" aria-label="Reset Zoom" onclick="resetZoom()">Reset</button>
+        <button class="btn btn-secondary" aria-label="Toggle Info Panel" onclick="toggleInfo()">Info</button>
       </div>
     </div>
 
@@ -898,17 +900,17 @@
     <div class="clustrmaps-extension" id="clustrmapsExtension" style="display: none;">
       <div style="text-align: center; padding: 20px; background: #f8f9fa; border-top: 1px solid #e9ecef; position: relative; z-index: 1000;">
         <p style="margin-bottom: 10px; color: #6c757d; font-size: 14px;">🌍 Global Visitors</p>
-        <a href="https://clustrmaps.com/site/1c7ak" title="ClustrMaps">
+        <a href="https://clustrmaps.com/site/1c7ak" title="ClustrMaps" target="_blank" rel="noopener noreferrer">
           <img src="https://clustrmaps.com/map_v2.png?d=V8kBZP8P4V3gWgilr_Hmiwrx2x4mr_Vf9YB8rfncYwc&cl=ffffff" alt="Visitor Map" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onerror="this.style.display='none'; console.log('ClustrMaps image failed to load');" />
         </a>
       </div>
     </div>
   </div>
 
-  <div class="info-panel" id="infoPanel">
+    <div class="info-panel" id="infoPanel" role="dialog" aria-modal="false" aria-labelledby="infoPanelTitle">
     <div class="info-header">
-      <h3>Interactive API Map</h3>
-      <button class="info-close" onclick="toggleInfo()">×</button>
+        <h3 id="infoPanelTitle">Interactive API Map</h3>
+        <button class="info-close" aria-label="Close info panel" onclick="toggleInfo()">×</button>
     </div>
     <p>This interactive diagram shows the Fusion 360 API structure. Click on any element to view its documentation.</p>
     <p><strong>Features:</strong></p>
@@ -920,13 +922,13 @@
       <li>Hover over elements for visual feedback</li>
     </ul>
     <p><strong>Total API Elements:</strong> <span id="totalElements">Loading...</span></p>
-    <a href="work-in-progress.html" target="_blank">View Full Documentation</a>
+    <a href="work-in-progress.html" target="_blank" rel="noopener noreferrer">View Full Documentation</a>
   </div>
 
-  <div class="stats-panel" id="statsPanel">
+    <div class="stats-panel" id="statsPanel" role="dialog" aria-modal="false" aria-labelledby="statsPanelTitle">
     <div class="info-header">
-      <h3>API Elements Analysis</h3>
-      <button class="info-close" onclick="toggleStats()">×</button>
+        <h3 id="statsPanelTitle">API Elements Analysis</h3>
+        <button class="info-close" aria-label="Close stats panel" onclick="toggleStats()">×</button>
     </div>
     <div class="stats-content">
       <div class="stats-summary">
@@ -935,8 +937,8 @@
         <p><strong>Missing Elements:</strong> <span id="statsMissingElements">0</span></p>
       </div>
       <div class="stats-tabs">
-        <button class="tab-button active" onclick="switchTab('missing')">Missing Elements</button>
-        <button class="tab-button" onclick="switchTab('loaded')">Loaded Elements</button>
+          <button class="tab-button active" onclick="switchTab(event, 'missing')">Missing Elements</button>
+          <button class="tab-button" onclick="switchTab(event, 'loaded')">Loaded Elements</button>
       </div>
       <div class="tab-content">
         <div id="missingTab" class="tab-pane active">
@@ -951,6 +953,7 @@
 
   <script>
     // Global variables
+    const ASSET_VERSION = 'v1'; // enable browser caching with a stable version string
     let currentZoom = 1;
     let apiLinks = {};
     let pdfMapping = {}; // PDF-based text mapping
@@ -961,7 +964,7 @@
     // Load the API links from the log file
     async function loadApiLinks() {
       try {
-        const response = await fetch('data/links.log?v=' + Date.now());
+        const response = await fetch('data/links.log?v=' + ASSET_VERSION);
         const text = await response.text();
         
         // Parse line by line
@@ -993,7 +996,7 @@
     // Load the PDF-based text mapping
     async function loadPdfMapping() {
       try {
-        const response = await fetch('data/pdf_text_mapping.json?v=' + Date.now());
+        const response = await fetch('data/pdf_text_mapping.json?v=' + ASSET_VERSION);
         const data = await response.json();
         
         // Create a mapping of text to API names with positions
@@ -1015,7 +1018,7 @@
     // Load API class information for hover tooltips
     async function loadApiClassInfo() {
       try {
-        const response = await fetch('data/api_class_info.json?v=' + Date.now());
+        const response = await fetch('data/api_class_info.json?v=' + ASSET_VERSION);
         const data = await response.json();
         apiClassInfo = data;
         
@@ -1079,7 +1082,7 @@
           <div class="tooltip-header">
             <h3 id="tooltipTitle">${this.apiName}</h3>
             <div class="tooltip-actions">
-              <a id="tooltipSourceLink" href="#" target="_blank" class="tooltip-link source-link">
+              <a id="tooltipSourceLink" href="#" target="_blank" rel="noopener noreferrer" class="tooltip-link source-link">
                 📄 View Source
               </a>
               <button class="tooltip-close">×</button>
@@ -1100,7 +1103,7 @@
           </div>
           <div class="documentation">
             <h4>Documentation</h4>
-            <a id="tooltipDocLink" href="work-in-progress.html" target="_blank" class="tooltip-link">
+            <a id="tooltipDocLink" href="work-in-progress.html" target="_blank" rel="noopener noreferrer" class="tooltip-link">
               📖 View Official Documentation
             </a>
           </div>
@@ -1427,7 +1430,7 @@
     // Load the SVG and add interactive dots based on PDF mapping
     async function loadSVG() {
       try {
-        const response = await fetch('assets/path12046.svg?v=' + Date.now());
+        const response = await fetch('assets/path12046.svg?v=' + ASSET_VERSION);
         const svgText = await response.text();
         
         // Create a temporary div to parse the SVG
@@ -1762,10 +1765,12 @@
     }
     
     // Switch between tabs
-    function switchTab(tabName) {
+    function switchTab(e, tabName) {
       // Update tab buttons
       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
+      if (e && e.target) {
+        e.target.classList.add('active');
+      }
       
       // Update tab panes
       document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
@@ -1860,9 +1865,12 @@
 
     // Initialize the application
     async function init() {
-      await loadApiLinks();
-      await loadPdfMapping();
-      await loadApiClassInfo();
+      // Load data in parallel, then render SVG and wire up search
+      await Promise.all([
+        loadApiLinks(),
+        loadPdfMapping(),
+        loadApiClassInfo()
+      ]);
       await loadSVG();
       setupSearch();
       
