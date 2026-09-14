@@ -514,7 +514,6 @@ async function loadSVG() {
       document.getElementById('svgContainer').innerHTML = '';
       document.getElementById('svgContainer').appendChild(svg);
       document.getElementById('stats').innerHTML = `<span class="stats-clickable" onclick="toggleStats()">Loaded ${totalElements} API elements • ${loadedElements} interactive dots created</span>`;
-      document.getElementById('clustrmapsExtension').style.display = 'block';
     }
   } catch (error) {
     console.error('Error loading SVG:', error);

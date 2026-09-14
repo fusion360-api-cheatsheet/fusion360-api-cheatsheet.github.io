@@ -896,15 +896,6 @@
       Loading statistics...
     </div>
     
-    <!-- ClustrMaps Extension -->
-    <div class="clustrmaps-extension" id="clustrmapsExtension" style="display: none;">
-      <div style="text-align: center; padding: 20px; background: #f8f9fa; border-top: 1px solid #e9ecef; position: relative; z-index: 1000;">
-        <p style="margin-bottom: 10px; color: #6c757d; font-size: 14px;">🌍 Global Visitors</p>
-        <a href="https://clustrmaps.com/site/1c7ak" title="ClustrMaps" target="_blank" rel="noopener noreferrer">
-          <img src="https://clustrmaps.com/map_v2.png?d=V8kBZP8P4V3gWgilr_Hmiwrx2x4mr_Vf9YB8rfncYwc&cl=ffffff" alt="Visitor Map" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onerror="this.style.display='none'; console.log('ClustrMaps image failed to load');" />
-        </a>
-      </div>
-    </div>
   </div>
 
     <div class="info-panel" id="infoPanel" role="dialog" aria-modal="false" aria-labelledby="infoPanelTitle">
@@ -951,6 +942,11 @@
     </div>
   </div>
 
-  <script src="assets/app.js?v=v1"></script>
+  <!-- MapMyVisitors Globe (visitor counter, replaces ClustrMaps) -->
+  <div id="mapmyvisitors-globe" style="position:fixed;bottom:12px;right:12px;width:80px;height:80px;z-index:9999;border-radius:50%;overflow:hidden;opacity:0.85;">
+    <script type="text/javascript" id="mmvst_globe" src="https://mapmyvisitors.com/globe.js?d=QleBgQmMWxHfcPXSuZH-CgcXuKuyeSaDboT9FoDNdZU"></script>
+  </div>
+
+  <script src="assets/app.js?v=v2"></script>
 </body>
 </html>
